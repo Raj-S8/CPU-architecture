@@ -1,4 +1,4 @@
-module (
+module ALU(
     input [7:0] a,
     input[7:0] b,
     input [3:0] opcode,
@@ -9,13 +9,14 @@ module (
 //reg [7:0] op;
 reg[7:0] AH, AL ;
 assign alu_output = AL;
+reg[8:0] temp; // used in CMP so that AL remains unaltered;
 
 
 always@(*) begin
 
   case(opcode)
 
-    4'b0000:
+    4'b0000: // Addition
     begin
         {c,AL} = a + b;
         z = AL == 0;
@@ -23,7 +24,7 @@ always@(*) begin
         n = AL[7];
     end
 
-    4'b0001:
+    4'b0001: // Subtraction
       begin
         {c,AL} = {1'b0,a} - {1'b0,b}; // a - b will also work (without accounting for the 9th bit)
         z = AL == 0;
@@ -148,8 +149,42 @@ always@(*) begin
         n = AL[7];
       end
 
+      4'b1101:
+        begin
+          AL = {a[6:0], a[7]};
+          c = a[7];
+          v = 0;
+          z = AL?0:1;
+          n = AL[7];
+        end
 
+      4'b1110:
+        begin
+          AL = {a[0], a[7:1]};
+          c = a[0];
+          v = 0;
+          z = AL?0:1;
+          n = AL[7];
+        end
 
-end
+      4'b1111: // CMP --> Compare a and b, does not store the result, just updates the flags.
+        begin // Useful if the next statement is BEQ as if branch if equal.
+          temp = {1'b0, a} - {1'b0, b};
+          c = temp[8];
+          v = (a[7] ^ b[7]) & (a[7] ^ temp[7]);
+          z = temp?0:1;
+          n = temp[7];
+        end
 
+      default:
+        begin
+          AL = 8'h00;
+          AH = 8'h00;
+          c = 0;
+          v = 0;
+          z = 1;
+          n = 0;
+        end
+    endcase
+  end
 endmodule
