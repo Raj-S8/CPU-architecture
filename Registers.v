@@ -1,6 +1,14 @@
 
 // Two Read One Write Register
 
+// The register is the closest memory to the CPU; It is also much faster than RAM; and much slower as well;
+
+// The register provides immediate access memory for the operations of the ALU and other components;
+
+// Usually it is the case that the read in the Register is asynchronous and the write is synchronous. This is so that the CPU does not have to wait for the clock edge; INSTANTANEOUS DATA RETRIEVAL;
+
+// Syntax to declare a memory block --> reg [Word Size] block name [depth of the block];
+
 module registers (
 
     input clk, // Clock as we use synchoronous Write;

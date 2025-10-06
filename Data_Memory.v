@@ -1,7 +1,13 @@
 
 // Data memory is a memory other than the registers;
+
 // It is essentially a RAM. It has a larger size than the Register memory but is significantly slower;
+
 // Stores the entire program and all the data it will need;
+
+// The RAM has synchronous Read unlike the register as it prioritizes Data integrity or more importantly the bulk memory is ususally placed far away from the CPU so it is somewhat necessary for the operations performed to and fro RAM are synchronize with the clock;
+
+
 
 module data_memory(
     input clk,
